@@ -57,9 +57,9 @@ MainWindow::MainWindow(QWidget *parent)
     layout->addWidget(intervalTimer);
 
     // e.
-    layout->addWidget(new QLabel("Ключ (8 байт число quint64):"));
+    layout->addWidget(new QLabel("Ключ (16 hex символов, 0123456789ABCDEF):"));
     xorKey = new QLineEdit();
-    xorKey->setInputMask("345345");
+    xorKey->setInputMask("HHHHHHHHHHHHHHHH");
     layout->addWidget(xorKey);
 
     Start = new QPushButton("СТАРТ");
@@ -107,6 +107,9 @@ void MainWindow::onStartClicked(){
         ifExist = REWRITE;
     }
 
+    bool keyInput;
+    quint64 key = xorKey->text().toULongLong(&keyInput, 16)
+
     // Задаем парамерты обработчика.
     processor->setParams(inputFolder->text(),
                          folderSave->text(),
@@ -114,7 +117,7 @@ void MainWindow::onStartClicked(){
                          ifExist,
                          fileFormat->text(),
                          radioTimer->isChecked(),
-                         xorKey->text().toULongLong(nullptr, 10),
+                         key,
                          intervalTimer->value());
 
     // Обработчик в поток.

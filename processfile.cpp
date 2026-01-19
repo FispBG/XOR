@@ -27,22 +27,12 @@ void ProcessFile::setParams(QString give_inputDir,
 }
 
 void ProcessFile::XOR(char* buff, quint64 countBytes, quint64 keyProcess){
-    // Преобразование указаьеля char -> quint64 (8 char = 1 quint64).
-    quint64* buffInt = reinterpret_cast<quint64*>(buff);
-    qint64 countSlices = countBytes / 8;
-
-
-    for (qint64 i = 0; i < countSlices; ++i){
-        buffInt[i] ^= keyProcess;
-    }
-
-    // Обрабатываем остатки.
-    qint64 remains = countSlices * 8;
+    // Преобразование указаьеля quint64 -> char (8 char = 1 quint64).
     // Сравнение по 1 char.
     char* keyChar = reinterpret_cast<char*>(&keyProcess);
 
-    for (qint64 i = remains; i < countBytes; ++i){
-        buff[i] ^= keyChar[i - remains];
+    for (qint64 i = 0; i < countBytes; ++i){
+        buff[i] ^= keyChar[i % 8];
     }
 }
 
